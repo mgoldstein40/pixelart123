@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Pixel Art 123</title>
+    <script src="{{ url_for('static', filename='js/sketch.js') }}" defer></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
+    
+    <!--Fontawesome Stylesheets-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='fa/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fa/css/solid.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fa/css/regular.min.css') }}">
+
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <header id="header">
+      <div id="site-name-wrapper">
+        <span id="site-name">
+          <h1 style="color: #FF0000">P</v>
+          <h1 style="color: #FF5300">i</h1>
+          <h1 style="color: #FFA500">x</h1>
+          <h1 style="color: #FFD200">e</h1>
+          <h1 style="color: #FFFF00">l</h1>
+          <h1 style="color: #80C000">A</h1>
+          <h1 style="color: #008000">r</h1>
+          <h1 style="color: #004080">t</h1>
+          <h1 style="color: #0000FF">1</h1>
+          <h1 style="color: #2600C1">2</h1>
+          <h1 style="color: #4B0082">3</h1>
+        </span>
+      </div>
+      <div id="sketch-name-wrapper">
+        <input id="sketch-name" type="text" />
+      </div>
+      <div id="site-settings-wrapper">
+        <!--i class="fas fa-gear"></i-->
+      </div>
+    </header>
+    <nav id="sidebar">
+      <div id="transformations" class="nav-section">
+        <h2>Transformations</h2>
+        <div class="buttons-container">
+          <button class="nav-cell" onclick="translateUp();" title="Translate Up"><i class="fas fa-arrow-up"></i></button>
+          <button class="nav-cell" onclick="translateRight();" title="Translate Right"><i class="fas fa-arrow-right"></i></button>
+          <button class="nav-cell" onclick="translateDown();" title="Translate Down"><i class="fas fa-arrow-down"></i></button>
+          <button class="nav-cell" onclick="translateLeft();" title="Translate Left"><i class="fas fa-arrow-left"></i></button>
+          <button class="nav-cell" onclick="reflectHorizontally();" title="Reflect Horizontally"><i class="fas fa-arrows-left-right"></i></button>
+          <button class="nav-cell" onclick="reflectVertically();" title="Reflect Vertically"><i class="fas fa-arrows-up-down"></i></button>
+          <button class="nav-cell" onclick="rotateClockwise();" title="Rotate Clockwise"><i class="fas fa-arrow-rotate-right"></i></button>
+          <button class="nav-cell" onclick="rotateCounterclockwise();" title="Rotate Counterclockwise"><i class="fas fa-arrow-rotate-left"></i></button>
+        </div>
+
+        <div class="divider nav-cell four-units"></div>
+        
+        <div class="buttons-container">
+          <button class="nav-cell two-units" onclick="undo();" data-title="Undo">UNDO</button>
+          <button class="nav-cell two-units" onclick="redo();" data-title="Redo">REDO</button>
+        </div>
+      </div>
+      <div id="draw-mode" class="nav-section">
+        <h2>Draw Mode</h2>
+        <div id="draw-mode" class="buttons-container">
+          <button class="nav-cell draw-mode checked" data-mode="p" title="Pixel" onclick="handleDrawMode(this);"><i class="fas fa-paintbrush"></i></button>
+          <button class="nav-cell draw-mode" data-mode="l" title="Line" onclick="handleDrawMode(this);"><i class="fas fa-slash"></i></button>
+          <button class="nav-cell draw-mode" data-mode="r" title="Rectangle" onclick="handleDrawMode(this);"><i class="far fa-square"></i></button>
+          <button class="nav-cell draw-mode" data-mode="rf" title="Filled Rectangle" onclick="handleDrawMode(this);"><i class="fas fa-square"></i></button>
+          <button class="nav-cell draw-mode" data-mode="p" title="Ellipse" onclick="handleDrawMode(this);"><i class="far fa-circle"></i></button>
+          <button class="nav-cell draw-mode" data-mode="p" title="Filled Ellipse" onclick="handleDrawMode(this);"><i class="fas fa-circle"></i></button>
+        </div>
+      </div>
+      <div id="draw-color" class="nav-section">
+        <h2>Draw Color</h2>
+        <div class="buttons-container">
+          <input id="draw-color-picker" class="nav-cell two-units" type="color" data-title="Pixel Color Picker"/>
+          <button class="nav-cell" onclick="fillGrid();" title="Fill"><i class="fas fa-fill-drip"></i></button>
+          <button class="nav-cell" onclick="clearGrid();" title="Clear"><i class="fas fa-trash-can"></i></button>
+
+          <div id="color-grid" class="color-grid nav-cell four-units"></div>
+          <div id="recent-color-grid" class="color-grid nav-cell four-units"></div>
+        </div>
+      </div>
+      <div id="files" class="nav-section">
+        <h2>Files</h2>
+        <div class="buttons-container">
+          <input id="file-input" type="file" accept="text/*, image/*"/>
+          <button id="upload" class="nav-cell two-units" onclick="upload();" title="Upload"><i class="fas fa-upload"></i></button>
+          <div id="download-wrapper" class="nav-cell two-units">
+            <span id="download-button-wrapper">
+              <button id="download-button" title="Download" onclick="downloadTxt();"><i class="fas fa-download"></i></button>
+              <button id="dropdown-button" title="Download Options" onclick="handleDropdown();"><i class='fas fa-caret-down'></i></button>
+            </span>
+            <div id="dropdown-menu">
+              <button class="dropdown-menu-item" onclick="downloadTxt();">.txt</button>
+              <button class="dropdown-menu-item" onclick="downloadIno();">.ino</button>
+              <button class="dropdown-menu-item" onclick="downloadImg('jpeg')">.jpeg</button>
+              <button class="dropdown-menu-item" onclick="downloadImg('png')">.png</button>
+          </div>
+          
+        </div>
+      </div>
+    </nav>
+    <section id="main">
+      <div id="grid-container"></div>
+      <div id="frames-container"></div>
+    </section>
+  </body>
+</html>

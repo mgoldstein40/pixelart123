@@ -1,0 +1,13 @@
+env
+.gitignore
+
+__pycache__
+.DS_Store
+*/.DS_Store
+
+
+txt
+ino
+pixel_matrix
+*.ino
+*.txt
