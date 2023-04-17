@@ -11,7 +11,10 @@
 // TODO: error handling
 
 // TODO: what if someone adds a named color from file?
+// TODO: color input size
+// TODO: arduino zip files
 
+const PASSWORD =  "[255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,255,255,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,255,128,0,0,0,0,0,0,0,0,0,0,255,128,0,255,128,0,255,255,0,0,0,0,255,255,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,255,128,0,0,0,0,255,128,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,0,0,0,0,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]";
 
 /*  COOKIE FUNCTIONS  */
 const writeCookie = (k, v) => {
@@ -64,6 +67,9 @@ const Color = class {
 const BLACK = new Color([0, 0, 0], "Black");
 const SILVER = new Color([192, 192, 192], "Silver");
 const WHITE = new Color([255, 255, 255], "White");
+const RED = new Color([255, 0, 0], "Red");
+const ORANGE = new Color([255, 128, 0], "Orange");
+const YELLOW = new Color([255, 255, 0], "Yellow");
 const PALETTE = [
 	BLACK,
 	new Color([128, 128, 128], "Gray"),
@@ -73,11 +79,11 @@ const PALETTE = [
 	new Color([255, 20, 147], "Deep Pink"),
 	new Color([128, 0, 0], "Maroon"),
 	new Color([178, 34, 34], "Fire Brick"),
-	new Color([255, 0, 0], "Red"),
+	RED,
 	new Color([255, 69, 0], "Coral"),
-	new Color([255, 128, 0], "Orange"),
+	ORANGE,
 	new Color([255, 215, 0], "Gold"),
-	new Color([255, 255, 0], "Yellow"),
+	YELLOW,
 	new Color([128, 255, 0], "Chartreuse"),
 	new Color([0, 255, 0], "Lime"),
 	new Color([50, 205, 50], "Lime Green"),
@@ -117,7 +123,7 @@ const Grid = class {
 	}
 
 	toString() {
-		return JSON.stringify(flat(this.#arr.map(c => c.rgb)));
+		return JSON.stringify(this.#arr.map(c => c.rgb).flat());
 	}
 
 	isEmpty() {
@@ -313,9 +319,13 @@ const drawCell = (i, j, newColor, actionID = null) => {
 				actionStack.splice(actionPtr + 1);
 			}
 		}
+		if (gridList[gridPtr].toString().trim() === PASSWORD) {
+			console.log("hooray");
+		}
 		//updateCurrentCanvas();
 	}
 };
+
 const drawRect = (ai, aj, bi, bj, c) => {
 	const actionID = uniqueActionID();
 
@@ -343,6 +353,7 @@ const drawFilledRect = (ai, aj, bi, bj, c) => {
 		}
 	}
 };
+
 const lineHelperLow = (ai, aj, bi, bj, c) => {
 	const uniqueID = uniqueActionID();
 
@@ -410,7 +421,6 @@ const drawLine = (ai, aj, bi, bj, c) => {
 		}
 	}
 };
-
 
 const uniqueActionID = () => uniqueID++;
 const setBtnColor = (i, j, c) => {
@@ -548,6 +558,9 @@ for (let i = 0; i < N; i++) {
 				} else if (drawMode === "l") {
 					undo();
 					drawLine(pi, pj, i, j, c);
+				} else if (drawMode === "e") {
+					undo();
+					drawEllipse(pi, pj, i, j, c);
 				}
 				
 			}
@@ -709,11 +722,23 @@ const downloadTxt = () => {
 const downloadIno = () => {
 	const fileName = sketchName.replace(/\s+/g, "-").toLowerCase().substring(0, 8);
 	const gridDataStr = gridList[gridPtr].toString().slice(1, -1);
-	const arduinoText = `#include <avr/pgmspace.h>\n#include <SPI.h>\n #include <SD.h>\nFile f;\nconst byte IMG[] PROGMEM = {${gridDataStr}};\nvoid setup() {\n\tSerial.begin(9600);\n\twhile (!Serial) { ; }\n\tif (!SD.begin(10)) { while (1); }\n\tSD.remove("${fileName}");\n\tf = SD.open("${fileName}", FILE_WRITE);\n\tif (f) {\n\t\tfor (int i = 0; i < 768; i++) { f.write(pgm_read_byte(&IMG[i])); }\n\t\tf.close();\n\t}\n}\nvoid loop() {}`;
-	const href = `data:text/plain;charset=utf-8, ${encodeURIComponent(arduinoText)}`;
-	if (confirm(`Due to Arduino file name restrictions, your file name may not match your current sketch name.\n\nYour sketch will be downloaded as: ${fileName}.ino`)) {
-		downloadHelper(fileName, "ino", href);
-	}
+	const addFileContent = `#include <avr/pgmspace.h>\n#include <SPI.h>\n #include <SD.h>\nFile f;\nconst byte IMG[] PROGMEM = {${gridDataStr}};\nvoid setup() {\n\tSerial.begin(9600);\n\twhile (!Serial) { ; }\n\tif (!SD.begin(10)) { while (1); }\n\tif (SD.exists("${fileName}.txt")) { Serial.println("File already exists."); }\n\telse {\n\t\tf = SD.open("${fileName}.txt", FILE_WRITE);\n\t\tif (f) {\n\t\t\tfor (int i = 0; i < 768; i++) { f.write(pgm_read_byte(&IMG[i])); }\n\t\t\tf.close();\n\t\t}\n\t}\n}\nvoid loop() {}`;
+	const showFileContent = `#include <SPI.h>\n#include <SD.h>\n#include "FastLED.h"\n#define NUM_LEDS 256\n#define DATA_PIN 9\nCRGB leds[NUM_LEDS];\nFile f;\nString fileName;\nlong color;\nvoid setup() {\n\tFastLED.addLeds<NEOPIXEL,DATA_PIN>(leds, NUM_LEDS);\n\tFastLED.setBrightness(12);\n\tSerial.begin(9600);\n\twhile (!Serial) { ; }\n\tif (!SD.begin(10)) { while(1); }\n\tf = SD.open("${fileName}.txt");\n\tif (f) {\n\t\tfor (size_t i = 0; i < NUM_LEDS; i++) {\n\t\t\tcolor = 0;\n\t\t\tcolor += currFile.read();\n\t\t\tcolor <<= 8;\n\t\t\tcolor += currFile.read();\n\t\t\tcolor <<= 8;\n\t\t\tcolor += currFile.read();\n\t\t\tleds[i] = color;\n\t\t}\n\t\tf.close();\n\t}\n\tFastLED.show();\n}\nvoid loop() {}`;
+	
+	const zip = JSZip();
+	const zipFolder = zip.folder(fileName);
+	zipFolder.folder(`add-${fileName}`).file(`add-${fileName}.ino`, addFileContent);
+	zipFolder.folder(`show-${fileName}`).file(`show-${fileName}.ino`, showFileContent);
+	
+	let zipFile = null;
+	zip.generateAsync({type: "base64"}).then(content => {
+		console.log(content);
+		zipFile = `data:application/zip;base64, ${encodeURIComponent(content)}`;
+
+		if (confirm(`Due to Arduino file name restrictions, your file name may not match your current sketch name.\n\nYour sketch will be downloaded as: ${fileName}.ino`)) {
+			downloadHelper(fileName, "zip", zipFile);
+		}
+	});
 };
 const downloadImg = suffix => {
 	const pixelWidth = GRID_CELL_SIZE * N;
@@ -721,6 +746,9 @@ const downloadImg = suffix => {
 	canvas.width = pixelWidth;
 	canvas.height = pixelWidth;
 
+	/*if (suffix === "ico") {
+		drawGridToCanvas(canvas, gridPtr, )
+	}*/
 	drawGridToCanvas(canvas, gridPtr, GRID_CELL_SIZE);
 	const src = canvas.toDataURL(`image/${suffix}`, 1.0);
 	downloadHelper(sketchName, suffix, src);
@@ -752,12 +780,13 @@ const handleKeyDown = e => {
 	}
 };
 
-document.onmouseup = e => {
-	pressedCell = null;
-};
+
 main.onkeydown = handleKeyDown;
 sidebar.onkeydown = handleKeyDown;
+document.onmouseup = e => {
+	pressedCell = null;
 
+};
 
 
 
@@ -792,7 +821,7 @@ const drawGridToCanvas = (canvas, gridIdx, pixelDilation) => {
 
 	for (let i = 0; i < N; i++) {
 		for (let j = 0; j < N; j++) {
-			const [r, g, b] = gridList[gridIdx][i][j].rgb;
+			const [r, g, b] = gridList[gridIdx].at(i, j).rgb;
 			for (let byteI = i * pixelDilation; byteI < (i + 1) * pixelDilation; byteI++) {
 				for (let byteJ = j * (pixelDilation * 4); byteJ < (j + 1) * (pixelDilation * 4); byteJ += 4) {
 					const idx = byteI * pixelWidth * 4 + byteJ;
