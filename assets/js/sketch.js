@@ -468,6 +468,7 @@ sketchNameInput.onkeydown = e => {
 
 /* SIDEBAR HTML ELEMENTS */
 const drawModeButtons = drawModeSection.querySelectorAll(".draw-mode");
+console.log(drawModeButtons);
 
 const drawColorPicker = drawColorSection.querySelector("#draw-color-picker");
 drawColorPicker.value = drawColor.hex;
@@ -763,11 +764,11 @@ const handleKeyDown = e => {
 			}
 		} else if (e.key === "ArrowLeft") {
 			drawMode--;
-			if (drawMode < 0) drawMode = drawModeButtons.length;
+			if (drawMode < 0) drawMode = drawModeButtons.length - 1;
 			updateDrawModeButtons();
 		} else if (e.key === "ArrowRight") {
 			drawMode++;
-			if (drawMode > drawModeButtons.length) drawMode = 0;
+			if (drawMode >= drawModeButtons.length) drawMode = 0;
 			updateDrawModeButtons();
 		}
 	} else if (e.key === "ArrowRight") {
