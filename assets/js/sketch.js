@@ -17,6 +17,30 @@
 
 
 
+/* COOKIE VARIABLES */
+const ONE_WEEK = 604800;
+const ONE_MONTH = 2592000;
+const ONE_YEAR = 31536000;
+
+let defaultCookieAge = ONE_WEEK; // One week
+
+/* COOKIE FUNCTIONS */
+const writeCookie = (k, v, age) => {
+	const cookieAge = (age === undefined) ? defaultCookieAge : age;
+	document.cookie = `${k}=${v}; max-age=${cookieAge}; samesite=strict; secure`; // Default cookie age is a week.
+};
+const getCookieValue = k => {
+	const cookie =  document.cookie.split("; ").find(row => row.startsWith(`${k}=`));
+	if (cookie !== undefined) return cookie.split("=")[1];
+};
+const deleteCookie = k => {
+	document.cookie = `${k}=; max-age=0; samesite=strict; secure`;
+};
+
+/* TODO: encode/decode objects for cookies using JSON or encodeURIComponent */	
+
+writeCookie("cookie-age", defaultCookieAge, ONE_YEAR);
+
 
 
 const Color = class {
