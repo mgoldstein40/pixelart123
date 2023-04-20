@@ -6,7 +6,7 @@
 // TODO: Fix color picker height
 
 // TODO: save as image
-// TODO: cookies (& last saved CSS)
+// TODO: cookies (& last saved button settings)
 
 // TODO: error handling
 
@@ -14,6 +14,7 @@
 // TODO: color input size
 
 //const PASSWORD =  "[255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,255,255,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,255,128,0,0,0,0,0,0,0,0,0,0,255,128,0,255,128,0,255,255,0,0,0,0,255,255,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,255,128,0,0,0,0,255,128,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,0,0,0,0,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]";
+
 
 
 
@@ -187,7 +188,7 @@ let sketchName = "My Pixel Sketch";
 let drawColor = WHITE;
 let pressedCell = null;
 
-let drawMode = "p";
+let drawMode = 0;
 let actionStack = [];
 let actionPtr = -1;
 
@@ -539,22 +540,18 @@ for (let i = 0; i < N; i++) {
 				const pi = pressedCell[0];
 				const pj = pressedCell[1];
 				const c = gridList[gridPtr].at(pi, pj);
-				if (drawMode === "p") {
+				if (drawMode === 0) {
 					drawCell(i, j, c);
-				} else if (drawMode === "r") {
-					undo();
-					drawRect(pi, pj, i, j, c);
-				} else if (drawMode === "rf") {
-					undo();
-					drawFilledRect(pi, pj, i, j, c);
-				} else if (drawMode === "l") {
+				} else if (drawMode === 1) {
 					undo();
 					drawLine(pi, pj, i, j, c);
-				} else if (drawMode === "e") {
+				} else if (drawMode === 2) {
 					undo();
-					drawEllipse(pi, pj, i, j, c);
+					drawRect(pi, pj, i, j, c);
+				} else if (drawMode === 3) {
+					undo();
+					drawFilledRect(pi, pj, i, j, c);
 				}
-				
 			}
 		};
 		gridRow.appendChild(gridBtn);
@@ -677,9 +674,13 @@ const redo = () => {
 };
 
 const handleDrawMode = el => {
+	drawMode = +el.dataset["mode"];
+	updateDrawModeButtons();
+};
+
+const updateDrawModeButtons = () => {
 	for (const drawModeButton of drawModeButtons) drawModeButton.classList.remove("checked");
-	drawMode = el.dataset["mode"];
-	el.classList.add("checked");
+	drawModeButtons[drawMode].classList.add("checked");
 };
 
 const clearGrid = () => {
@@ -760,6 +761,14 @@ const handleKeyDown = e => {
 			} else {
 				undo();
 			}
+		} else if (e.key === "ArrowLeft") {
+			drawMode--;
+			if (drawMode < 0) drawMode = drawModeButtons.length;
+			updateDrawModeButtons();
+		} else if (e.key === "ArrowRight") {
+			drawMode++;
+			if (drawMode > drawModeButtons.length) drawMode = 0;
+			updateDrawModeButtons();
 		}
 	} else if (e.key === "ArrowRight") {
 		translateRight();
@@ -769,6 +778,10 @@ const handleKeyDown = e => {
 		translateUp();
 	} else if (e.key === "ArrowDown") {
 		translateDown();
+	} else if (e.key === "f") {
+		fillGrid();
+	} else if (e.key === "c") {
+		clearGrid();
 	}
 };
 
