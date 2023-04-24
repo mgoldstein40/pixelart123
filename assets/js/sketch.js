@@ -13,7 +13,7 @@
 // TODO: what if someone adds a named color from file?
 // TODO: color input size
 
-// TODO: click & drag not working with undo/redo
+// TODO: custom palettes
 
 
 
