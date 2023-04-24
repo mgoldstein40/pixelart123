@@ -13,9 +13,7 @@
 // TODO: what if someone adds a named color from file?
 // TODO: color input size
 
-//const PASSWORD =  "[255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,255,255,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,255,128,0,0,0,0,0,0,0,0,0,0,255,128,0,255,128,0,255,255,0,0,0,0,255,255,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,255,128,0,0,0,0,255,128,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,0,0,0,0,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]";
-
-
+// TODO: click & drag not working with undo/redo
 
 
 
@@ -245,10 +243,8 @@ const handleImgUpload = e => {
 			const i = Math.floor((idx / 4) / N);
 			const j = (idx / 4) % N;
 			const c = new Color([loadedImgArr[idx], loadedImgArr[idx + 1], loadedImgArr[idx + 2]]);
-			console.log(i, j, c);
 			drawCell(i, j, c, actionID);
 		}
-		console.log(loadedImgArr.length);
 	};
 	
 	img.remove();
@@ -256,8 +252,7 @@ const handleImgUpload = e => {
 };
 const uploadHelper = file => {
 	if (gridList[gridPtr].isEmpty() || confirm("Are you sure you want to upload a file? (Doing so will erase your current drawing.)")) {
-		const reader = new FileReader();		
-		console.log(file.type);
+		const reader = new FileReader();
 		if (file.type && file.type.startsWith("text")) {
 			reader.onload = handleTxtUpload;
 			reader.readAsText(file);
@@ -295,7 +290,7 @@ const drawCell = (i, j, newColor, actionID = null) => {
 		}
 
 		if (
-			(drawMode === "p" && pressedCell != null) ||
+			(drawMode === 0 && pressedCell != null) ||
 			(actionID !== null && (actionStack[actionPtr]?.at(-1)[4] ?? -1) === actionID)
 		) {
 			// Add action to an ongoing action at the top of the array.
@@ -312,9 +307,6 @@ const drawCell = (i, j, newColor, actionID = null) => {
 				actionStack.splice(actionPtr + 1);
 			}
 		}
-		/*if (gridList[gridPtr].toString().trim() === PASSWORD) {
-			console.log("hooray");
-		}*/
 		//updateCurrentCanvas();
 	}
 };
@@ -468,7 +460,6 @@ sketchNameInput.onkeydown = e => {
 
 /* SIDEBAR HTML ELEMENTS */
 const drawModeButtons = drawModeSection.querySelectorAll(".draw-mode");
-console.log(drawModeButtons);
 
 const drawColorPicker = drawColorSection.querySelector("#draw-color-picker");
 drawColorPicker.value = drawColor.hex;
@@ -726,7 +717,6 @@ const downloadIno = () => {
 	
 	let zipFile = null;
 	zip.generateAsync({type: "base64"}).then(content => {
-		console.log(content);
 		zipFile = `data:application/zip;base64, ${encodeURIComponent(content)}`;
 
 		if (confirm(`Due to Arduino file name restrictions, your file name may not match your current sketch name.\n\nYour sketch will be downloaded as: ${fileName}.ino`)) {
