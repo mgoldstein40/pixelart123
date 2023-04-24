@@ -115,73 +115,6 @@ const Grid = class {
 	}
 };
 
-const GridArray = class {
-	#size;
-
-	#ptr;
-	#offset;
-
-	#arr;
-
-	#times;
-	#clipboard;
-
-	constructor(size) {
-		this.#size = size;
-		this.#ptr = -1;
-		this.#offset = 0;
-		this.#arr = [];
-		this.#times = [];
-		this.#clipboard = null;
-	}
-
-	get ptr() {
-		return this.#ptr;
-	}
-	get curr() {
-		return this.#arr[this.#ptr] ?? null;
-	}
-	get length() {
-		return this.#arr.length;
-	}
-
-	addGrid() {
-		this.#arr.push(new Grid(this.#size));
-		this.#ptr = this.length - 1;
-	}
-	copyGrid(idx) {
-		if (idx >= 0 && idx < this.length) this.#clipboard = this.#arr[idx].toString();
-	}
-	pasteGrid(idx) {
-		if (idx >= 0 && idx < this.length) this.#arr[idx].fromString(this.#clipboard);
-	}
-	removeGrid() {
-		this.#arr = this.#arr.splice(this.#ptr, 1);
-		if (this.#ptr === this.length) this.#ptr--;
-		if (this.length === 0) this.#ptr = -1;
-	}
-	prev() {
-		if (this.#ptr > 0) this.#ptr--;
-	}
-	next() {
-		if (this.#ptr < this.length - 1) this.#ptr++;
-	}
-	select(idx) {
-		if (idx >= 0 && idx < this.length) this.#ptr = idx;
-	}
-
-	drawFrames() {
-		for (let idx = 0; idx < MAX_FRAMES_SHOWN; idx++) {
-
-		}
-		// DRAW THE CURRENT VIEW OF THIS GRID ARRAY (USING OFFSET, PTR, ETC.)
-	}
-
-	drawFrame(idx) {
-		// DRAW ONLY THE RELEVANT GRID
-	}
-};
-
 
 /* CONSTANTS DECLARATIONS */
 const N = 16;
@@ -319,7 +252,7 @@ const drawCell = (i, j, newColor, actionID = null) => {
 				actionStack.splice(actionPtr + 1);
 			}
 		}
-		updateCurrentCanvas();
+		grids.drawCurr();
 	}
 };
 
@@ -662,7 +595,7 @@ const undo = () => {
 		}
 		actionPtr--;
 	}
-	updateCurrentCanvas();
+	grids.drawCurr();
 };
 const redo = () => {
 	if (actionPtr < actionStack.length - 1) {
@@ -673,7 +606,7 @@ const redo = () => {
 			setBtnColor(i, j, newColor);
 		}
 	}
-	updateCurrentCanvas();
+	grids.drawCurr();
 };
 
 const handleDrawMode = el => {
@@ -791,8 +724,8 @@ const handleKeyDown = e => {
 document.onkeydown = handleKeyDown;
 document.onmouseup = e => {
 	pressedCell = null;
-
 };
+
 
 
 
@@ -800,29 +733,110 @@ document.onmouseup = e => {
 const MAX_FRAMES_SHOWN = 8;
 const FRAME_PIXEL_DILATION = 4;
 
-let grids = new GridArray(N);
-grids.addGrid();
-
-
-
-for (let i = 0; i < MAX_RECENT_COLORS; i++) {
+for (let i = 0; i < MAX_FRAMES_SHOWN; i++) {
 	const frameCanvas = document.createElement("canvas");
 	frameCanvas.classList.add("frame-item");
 	frameCanvas.width = 4 * N;
 	frameCanvas.height = 4 * N;
 	frameCanvas.id = `frame-${i}`;
 
-	const ctx = frameCanvas.getContext("2d");
+	/*const ctx = frameCanvas.getContext("2d");
 	const pixelWidth = N * FRAME_PIXEL_DILATION;
-	//const imgData = ctx.createImageData(pixelWidth, pixelWidth);
 	ctx.beginPath();
 	ctx.rect(0, 0, pixelWidth, pixelWidth);
 	ctx.fillStyle = "gray";
-	ctx.fill();
+	ctx.fill();*/
 	frames.appendChild(frameCanvas);
 }
 
+const GridArray = class {
+	#size;
 
+	#ptr;
+	#offset;
+
+	#arr;
+
+	#times;
+	#clipboard;
+
+	constructor(size) {
+		this.#size = size;
+		this.#ptr = -1;
+		this.#offset = 0;
+		this.#arr = [];
+		this.#times = [];
+		this.#clipboard = null;
+	}
+
+	get ptr() {
+		return this.#ptr;
+	}
+	get curr() {
+		return this.#arr[this.#ptr] ?? null;
+	}
+	get length() {
+		return this.#arr.length;
+	}
+	get currCanvas() {
+		return frames.querySelector(`#frame-${this.#ptr - this.#offset}`);
+	}
+
+	addFrame() {
+		this.#arr.splice(this.#ptr, 0, new Grid(this.#size));
+		this.#ptr++;
+	}
+	removeFrame() {
+		this.#arr = this.#arr.splice(this.#ptr, 1);
+		if (this.#ptr === this.length) this.#ptr--;
+		if (this.length <= 0) this.#ptr = -1;
+	}
+	copyFrame(idx) {
+		if (idx >= 0 && idx < this.length) this.#clipboard = this.#arr[idx].toString();
+	}
+	pasteFrame(idx) {
+		if (idx >= 0 && idx < this.length) this.#arr[idx].fromString(this.#clipboard);
+	}
+	prevFrame() {
+		if (this.#ptr > 0) this.#ptr--;
+	}
+	nextFrame() {
+		if (this.#ptr < this.length - 1) this.#ptr++;
+	}
+	select(idx) {
+		if (idx >= 0 && idx < this.length) this.#ptr = idx;
+	}
+
+	drawFrames() {
+		for (let canvasIdx = 0; canvasIdx < MAX_FRAMES_SHOWN; canvasIdx++) {
+			const canvas = frames.querySelector(`#frame-${canvasIdx}`);
+			const idx = canvasIdx + this.#offset;
+			if (idx < this.length) {
+				this.#arr[idx].drawFrame(canvas);
+				canvas.classList.remove("curr");
+				if (idx === this.#ptr) {
+					canvas.classList.add("curr");
+				}
+			} else {
+				this.drawNullFrame(canvas);
+			}
+		}
+	}
+
+	drawCurr() {
+		this.curr.drawFrame(this.currCanvas);
+	}
+
+	drawNullFrame(canvas) {
+		const ctx = canvas.getContext("2d");
+		const pixelWidth = this.#size * FRAME_PIXEL_DILATION;
+
+		ctx.beginPath();
+		ctx.rect(0, 0, pixelWidth, pixelWidth);
+		ctx.fillStyle = "gray";
+		ctx.fill();
+	}
+};
 
 const drawGridToCanvas = canvas => {
 	const ctx = canvas.getContext("2d");
@@ -847,48 +861,35 @@ const drawGridToCanvas = canvas => {
 };
 
 
+const addFrame = () => {
+	grids.addFrame();
+	grids.drawFrames();
+};
+const removeFrame = () => {
+	grids.removeFrame();
+	grids.drawFrames();
+};
+const copyFrame = () => {
+	grids.copyFrame();
+};
+const pasteFrame = () => {
+};
+const prevFrame = () => {
 
-const updateCurrentCanvas = () => {
-	const canvas = frames.querySelector("#frame-0");
-	drawGridToCanvas(canvas, 4);
+};
+const nextFrame = () => {
+
 };
 
-updateCurrentCanvas();
-/*
-
-for (let i = 0; i < MAX_FRAMES_SHOWN; i++) {
-	const frameContainer = document.createElement("div");
-	
-	recentColorBtn.id = `recent-colors-${i}`;
-	recentColorBtn.classList.add("color-btn");
-	recentColorBtn.classList.add("recent");
-	recentColorBtn.style.backgroundColor = rgbToHex(SILVER);
-	recentColorBtn.onclick = handleRecentColor;
 
 
-	frames.appendChild(frame);
-}*/
 
 
-/*
 
-const handleRecentColor = e => {
-	const idx = +e.target.id.slice(-1);
-	if (idx < recentColors.length) setDrawColor(recentColors[idx]);
-};
-const addRecentColor = c => {
-	if (
-		!PALETTE.some(otherColor => c.isEqual(otherColor)) &&
-		!recentColors.some(otherColor => c.isEqual(otherColor))
-	) {
-		const len = recentColors.unshift(c);
-		if (len > MAX_RECENT_COLORS) recentColors.splice(MAX_RECENT_COLORS);
+let grids = new GridArray(N);
+addFrame();
 
-		for (let i = 0; i < len; i++) {
-			const recentColorBtn = recentColorGrid.querySelector(`#recent-colors-${i}`);
-			recentColorBtn.title = recentColors[i].title;
-			recentColorBtn.style.backgroundColor = recentColors[i].hex;
-		}
-	}
-};
-*/
+
+
+
+
