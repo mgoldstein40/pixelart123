@@ -198,23 +198,43 @@ header #sketch-name-wrapper #sketch-name {
   background-color: #FFF0B0;
   height: auto;
   width: auto;
-  /*#frames-container {
-
-   }*/
+  display: flex;
+  flex-direction: column;
 }
-#main #grid-container {
+#main #frames-container {
+  height: 120px;
+  background-color: skyblue;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#main #frames-container #frames {
+  position: relative;
+  left: 20px;
+  border: 5px solid silver;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+}
+#main #frames-container #frames .frame-item {
+  border: 1px solid silver;
+}
+#main #frames-container #frames .frame-item.selected {
+  border: 2px solid gold;
+}
+#main #sketch-container #sketch {
   position: relative;
   top: var(--grid-cell-size);
   left: var(--grid-cell-size);
 }
-#main #grid-container button {
+#main #sketch-container #sketch button {
   width: var(--grid-cell-size);
   height: var(--grid-cell-size);
 }
-#main #grid-container .grid-row {
+#main #sketch-container #sketch .grid-row {
   display: flex;
 }
-#main #grid-container .grid-row .grid-btn {
+#main #sketch-container #sketch .grid-row .grid-btn {
   border: 0.5px solid lightgray;
 }
 

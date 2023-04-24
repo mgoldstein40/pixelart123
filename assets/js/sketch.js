@@ -1,99 +1,65 @@
 // TODO: Edit code (consistent order of functions and for loop variable names and variable names in general)
 // TODO: Comment the code
 // TODO: Titles & keyboard shortcuts
-// TODO: when a cell is drawn with a less recent color, make it the most recent color?????
+// TODO: when a cell is drawn with a less recent color, make it the most recent color????? -> add to drawcell?
 // TODO: general animation stuff
 // TODO: Fix color picker height
+
+// TODO: Change drawGridToCanvas so that it only redraws affected cells (put in drawcell & undo, redo)
 
 // TODO: save as image
 // TODO: cookies (& last saved button settings)
 
 // TODO: error handling
 
-// TODO: what if someone adds a named color from file?
 // TODO: color input size
-
-//const PASSWORD =  "[255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,255,255,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,255,128,0,0,0,0,0,0,0,0,0,0,255,128,0,255,128,0,255,255,0,0,0,0,255,255,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,255,128,0,0,0,0,255,128,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,0,0,0,0,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]";
-
-
-
-
 
 const Color = class {
 	#rgb;
 	#hex;
 	#title;
 
-	constructor(colorData, title = null) {
+    static colorNames = {"Black": "#000000", "Gray": "#808080", "Silver": "#c0c0c0", "White": "#ffffff", "Fuchsia": "#ff00ff", "Deep Pink": "#ff1493", "Maroon": "#800000", "Fire Brick": "#b22222", "Red": "#ff0000", "Coral": "#ff4500", "Orange": "#ff8000", "Gold": "#ffd700", "Yellow": "#ffff00", "Chartreuse": "#80ff00", "Lime": "#00ff00", "Lime Green": "#32cd32", "Olive Drab": "#6b8e23", "Green": "#008000", "Teal": "#008080", "Deep Sky Blue": "#00bfff", "Aquamarine": "#7fffd4", "Cyan": "#00ffff", "Blue": "#0000ff", "Navy": "#000080", "Indigo": "#4b0082", "Dark Violet": "#9400d3", "Violet": "#ee82ee", "Pink": "#ffc0cb", "Tan": "#d2b48c", "Khaki": "#f0e68c", "Sienna": "#a0522d", "Saddle Brown": "#8b4513"};
+
+    
+	constructor(colorData) {
 		if (Array.isArray(colorData) && colorData.length == 3 && colorData.every(k => Number.isInteger(k) && k >= 0 && k < 256)) {
 			this.#rgb = colorData;
-			this.#hex = "#" + colorData.map(k => (k < 16 ? "0" : "") + k.toString(16)).join("");
+			this.#hex = "#" + colorData.map(k => (k < 16 ? "0" : "") + k.toString(16)).join("").upper();
 		} else if (typeof(colorData) === "string") {
-			this.#hex = colorData;
-			this.#rgb = new Array(3)
-				.fill(parseInt(colorData.slice(1), 16))
-				.map((k, i) => Math.floor(k / (256 ** (2 - i))) % 256);
+            if (colorData.slice(0, 1) === "#") {
+                this.#hex = colorData;
+                this.#rgb = new Array(3)
+					.fill(parseInt(colorData.slice(1), 16))
+					.map((k, i) => Math.floor(k / (256 ** (2 - i))) % 256);
+            }
 		}
-		this.#title = title;
+        this.#title = this.#hex;
+		Object.entries(Color.colorNames).forEach(colorEntry => { if (this.#hex === colorEntry[1]) this.#title = colorEntry[0]; });
 	}
+
 
 	get rgb() {
-		return this.#rgb;
-	}
-
+        return this.#rgb;
+    }
 	get hex() {
-		return this.#hex;
-	}
-
+        return this.#hex;
+    }
 	get title() {
-		return (this.#title === null) ? this.#hex : this.#title;
-	}
+        return this.#title;
+    }
+
 
 	isEqual(otherColor) {
-		return this.#rgb.every((k, i) => k === otherColor.rgb[i]);
-	}
+        return this.#hex === otherColor.hex;
+    }
 };
 
-const BLACK = new Color([0, 0, 0], "Black");
-const SILVER = new Color([192, 192, 192], "Silver");
-const WHITE = new Color([255, 255, 255], "White");
-const RED = new Color([255, 0, 0], "Red");
-const ORANGE = new Color([255, 128, 0], "Orange");
-const YELLOW = new Color([255, 255, 0], "Yellow");
-const PALETTE = [
-	BLACK,
-	new Color([128, 128, 128], "Gray"),
-	SILVER,
-	WHITE,
-	new Color([255, 0, 255], "Fuchsia"),
-	new Color([255, 20, 147], "Deep Pink"),
-	new Color([128, 0, 0], "Maroon"),
-	new Color([178, 34, 34], "Fire Brick"),
-	RED,
-	new Color([255, 69, 0], "Coral"),
-	ORANGE,
-	new Color([255, 215, 0], "Gold"),
-	YELLOW,
-	new Color([128, 255, 0], "Chartreuse"),
-	new Color([0, 255, 0], "Lime"),
-	new Color([50, 205, 50], "Lime Green"),
-	new Color([107, 142, 35], "Olive Drab"),
-	new Color([0, 128, 0], "Green"),
-	new Color([0, 128, 128], "Teal"),
-	new Color([0, 191, 255], "Deep Sky Blue"),
-	new Color([127, 255, 212], "Aquamarine"),
-	new Color([0, 255, 255], "Cyan"),
-	new Color([0, 0, 255], "Blue"),
-	new Color([0, 0, 128], "Navy"),
-	new Color([75, 0, 130], "Indigo"),
-	new Color([148, 0, 211], "Dark Violet"),
-	new Color([238, 130, 238], "Violet"),
-	new Color([255, 192, 203], "Pink"),
-	new Color([210, 180, 140], "Tan"),
-	new Color([240, 230, 140], "Khaki"),
-	new Color([160, 82, 45], "Sienna"),
-	new Color([139, 69, 19], "Saddle Brown")
-];
+PALETTE = Object.values(Color.colorNames).map(hex => new Color(hex));
+const BLACK = new Color("#000000");
+const SILVER = new Color("#c0c0c0");
+const WHITE = new Color("#ffffff");
+
 
 const Grid = class {
 	#size;
@@ -104,73 +70,94 @@ const Grid = class {
 		this.#arr = Array(size ** 2).fill(BLACK);
 	}
 
+	get size() { return this.#size; }
+
 	at(i, j) {
 		return this.#arr[i * this.#size + j];
 	}
-
 	put(i, j, c) {
 		this.#arr[i * this.#size + j] = c;
 	}
-
 	toString() {
 		return JSON.stringify(this.#arr.map(c => c.rgb).flat());
 	}
-
+	fromString(s) {
+		const newArr = JSON.parse(s);
+		for (let idx = 0; idx < this.#size ** 2; idx++) {
+			const newArrIdx = idx * 3;
+			this.#arr[idx] = new Color([newArr[newArrIdx], newArr[newArrIdx + 1], newArr[newArrIdx + 2]]);
+		}
+	}
 	isEmpty() {
 		return this.#arr.every(c => c.isEqual(BLACK));
 	}
 
-	get size() {
-		return this.#size;
+	draw() {
+		// REDRAW GRID TO MATCH CURRENT DATA
 	}
 };
 
 const GridArray = class {
 	#size;
+
 	#ptr;
+	#offset;
+
 	#arr;
-	#delays;
+
+	#times;
 	#clipboard;
 
 	constructor(size) {
 		this.#size = size;
-		this.#ptr = 0;
-		this.#arr = [new Grid(size)];
-		this.delays = [1000];
+		this.#ptr = -1;
+		this.#offset = 0;
+		this.#arr = [];
+		this.#times = [];
 		this.#clipboard = null;
 	}
 
+	get ptr() {
+		return this.#ptr;
+	}
 	get curr() {
 		return this.#arr[this.#ptr] ?? null;
+	}
+	get length() {
+		return this.#arr.length;
 	}
 
 	addGrid() {
 		this.#arr.push(new Grid(this.#size));
+		this.#ptr = this.length - 1;
 	}
-
 	copyGrid(idx) {
 		if (idx >= 0 && idx < this.length) this.#clipboard = this.#arr[idx].toString();
 	}
-
-	removeGrid() {
-		this.#arr.splice(this.#ptr, 1);
-		if (this.#ptr === this.length) this.#ptr--;
+	pasteGrid(idx) {
+		if (idx >= 0 && idx < this.length) this.#arr[idx].fromString(this.#clipboard);
 	}
-
+	removeGrid() {
+		this.#arr = this.#arr.splice(this.#ptr, 1);
+		if (this.#ptr === this.length) this.#ptr--;
+		if (this.length === 0) this.#ptr = -1;
+	}
 	prev() {
 		if (this.#ptr > 0) this.#ptr--;
 	}
-
 	next() {
 		if (this.#ptr < this.length - 1) this.#ptr++;
 	}
-
 	select(idx) {
 		if (idx >= 0 && idx < this.length) this.#ptr = idx;
 	}
 
-	get length() {
-		return this.#arr.length;
+	draw() {
+		// DRAW THE CURRENT VIEW OF THIS GRID ARRAY (USING OFFSET, PTR, ETC.)
+	}
+
+	drawGrid(idx) {
+		// DRAW ONLY THE RELEVANT GRID
 	}
 };
 
@@ -214,8 +201,10 @@ const drawColorSection = sidebar.querySelector("#draw-color");
 const filesSection = sidebar.querySelector("#files");
 
 const main = document.querySelector("#main");
-const gridContainer = main.querySelector("#grid-container");
+const sketchContainer = main.querySelector("#sketch-container");
+const sketch = sketchContainer.querySelector("#sketch");
 const framesContainer = main.querySelector("#frames-container");
+const frames = framesContainer.querySelector("#frames");
 
 
 /* FILE HELPER FUNCTIONS */
@@ -253,7 +242,7 @@ const handleImgUpload = e => {
 	canvas.remove();
 };
 const uploadHelper = file => {
-	if (gridList[gridPtr].isEmpty() || confirm("Are you sure you want to upload a file? (Doing so will erase your current drawing.)")) {
+	if (grids.curr.isEmpty() || confirm("Are you sure you want to upload a file? (Doing so will erase your current drawing.)")) {
 		const reader = new FileReader();
 		if (file.type && file.type.startsWith("text")) {
 			reader.onload = handleTxtUpload;
@@ -281,8 +270,8 @@ const downloadHelper = (name, suffix, href) => {
 
 /* DRAWING HELPER FUNCTIONS */
 const drawCell = (i, j, newColor, actionID = null) => {
-	if (!newColor.isEqual(gridList[gridPtr].at(i, j))) {
-		const action = [i, j, gridList[gridPtr].at(i, j), newColor, actionID];
+	if (!newColor.isEqual(grids.curr.at(i, j))) {
+		const action = [i, j, grids.curr.at(i, j), newColor, actionID];
 		setBtnColor(i, j, newColor);
 	
 		// If stack is full, forget bottom of stack.
@@ -309,10 +298,7 @@ const drawCell = (i, j, newColor, actionID = null) => {
 				actionStack.splice(actionPtr + 1);
 			}
 		}
-		/*if (gridList[gridPtr].toString().trim() === PASSWORD) {
-			console.log("hooray");
-		}*/
-		//updateCurrentCanvas();
+		updateCurrentCanvas();
 	}
 };
 
@@ -414,8 +400,8 @@ const drawLine = (ai, aj, bi, bj, c) => {
 
 const uniqueActionID = () => uniqueID++;
 const setBtnColor = (i, j, c) => {
-	gridList[gridPtr].put(i, j, c);
-	const btn = gridContainer.querySelector(`#grid-${i}-${j}`);
+	grids.curr.put(i, j, c);
+	const btn = sketch.querySelector(`#grid-${i}-${j}`);
 	btn.title = c.title;
 	btn.style.backgroundColor = c.hex;
 }
@@ -524,9 +510,9 @@ for (let i = 0; i < N; i++) {
 
 		gridBtn.onmousedown = e => {
 			if (e.ctrlKey || e.metaKey) {
-				setDrawColor(gridList[gridPtr].at(i, j));
+				setDrawColor(grids.curr.at(i, j));
 			} else {
-				const newColor = drawColor.isEqual(gridList[gridPtr].at(i, j)) ? BLACK : drawColor;
+				const newColor = drawColor.isEqual(grids.curr.at(i, j)) ? BLACK : drawColor;
 				drawCell(i, j, newColor);
 				pressedCell = [i, j];
 			}
@@ -535,7 +521,7 @@ for (let i = 0; i < N; i++) {
 			if (pressedCell !== null) {
 				const pi = pressedCell[0];
 				const pj = pressedCell[1];
-				const c = gridList[gridPtr].at(pi, pj);
+				const c = grids.curr.at(pi, pj);
 				if (drawMode === 0) {
 					drawCell(i, j, c);
 				} else if (drawMode === 1) {
@@ -552,7 +538,7 @@ for (let i = 0; i < N; i++) {
 		};
 		gridRow.appendChild(gridBtn);
 	}
-	gridContainer.appendChild(gridRow);
+	sketch.appendChild(gridRow);
 }
 
 
@@ -561,7 +547,7 @@ const translateUp = () => {
 	const actionID = uniqueActionID();
 	for (let i = 1; i < N; i++) {
 		for (let j = 0; j < N; j++) {
-			drawCell(i - 1, j, gridList[gridPtr].at(i, j), actionID);
+			drawCell(i - 1, j, grids.curr.at(i, j), actionID);
 		}
 	}
 	for (let j = 0; j < N; j++) {
@@ -572,7 +558,7 @@ const translateRight = () => {
 	const actionID = uniqueActionID();
 	for (let i = 0; i < N; i++) {
 		for (let j = N - 2; j >= 0; j--) {
-			drawCell(i, j + 1, gridList[gridPtr].at(i, j), actionID);
+			drawCell(i, j + 1, grids.curr.at(i, j), actionID);
 		}
 	}
 	for (let i = 0; i < N; i++) {
@@ -583,7 +569,7 @@ const translateDown = () => {
 	const actionID = uniqueActionID();
 	for (let i = N - 2; i >= 0; i--) {
 		for (let j = 0; j < N; j++) {
-			drawCell(i + 1, j, gridList[gridPtr].at(i, j), actionID);
+			drawCell(i + 1, j, grids.curr.at(i, j), actionID);
 		}
 	}
 	for (let j = 0; j < N; j++) {
@@ -594,7 +580,7 @@ const translateLeft = () => {
 	const actionID = uniqueActionID();
 	for (let i = 0; i < N; i++) {
 		for (let j = 1; j < N; j++) {
-			drawCell(i, j - 1, gridList[gridPtr].at(i, j), actionID);
+			drawCell(i, j - 1, grids.curr.at(i, j), actionID);
 		}
 	}
 	for (let i = 0; i < N; i++) {
@@ -605,8 +591,8 @@ const reflectHorizontally = () => {
 	const actionID = uniqueActionID();
 	for (let i = 0; i < N; i++) {
 		for (let j = 0; j < Math.floor(N / 2); j++) {
-			const temp = gridList[gridPtr].at(i, N - j - 1);
-			drawCell(i, N - j - 1, gridList[gridPtr].at(i, j), actionID);
+			const temp = grids.curr.at(i, N - j - 1);
+			drawCell(i, N - j - 1, grids.curr.at(i, j), actionID);
 			drawCell(i, j, temp, actionID);
 		}
 	}
@@ -615,8 +601,8 @@ const reflectVertically = () => {
 	const actionID = uniqueActionID();
 	for (let i = 0; i < Math.floor(N / 2); i++) {
 		for (let j = 0; j < N; j++) {
-			const temp = gridList[gridPtr].at(N - i - 1, j);
-			drawCell(N - i - 1, j, gridList[gridPtr].at(i, j), actionID);
+			const temp = grids.curr.at(N - i - 1, j);
+			drawCell(N - i - 1, j, grids.curr.at(i, j), actionID);
 			drawCell(i, j, temp, actionID);
 		}
 	}
@@ -625,10 +611,10 @@ const rotateClockwise = () => {
 	const actionID = uniqueActionID();
 	for (let i = 0; i < Math.floor(N / 2); i++) {
 		for (let j = i; j < N - i - 1; j++) {
-			const temp = gridList[gridPtr].at(i, j);
-			drawCell(i, j, gridList[gridPtr].at(N - j - 1, i), actionID);
-			drawCell(N -j - 1, i, gridList[gridPtr].at(N - i - 1, N - j - 1), actionID);
-			drawCell(N - i - 1, N - j - 1, gridList[gridPtr].at(j, N - i - 1), actionID);
+			const temp = grids.curr.at(i, j);
+			drawCell(i, j, grids.curr.at(N - j - 1, i), actionID);
+			drawCell(N -j - 1, i, grids.curr.at(N - i - 1, N - j - 1), actionID);
+			drawCell(N - i - 1, N - j - 1, grids.curr.at(j, N - i - 1), actionID);
 			drawCell(j, N - i - 1, temp, actionID);
 		}
 	}
@@ -637,10 +623,10 @@ const rotateCounterclockwise = () => {
 	const actionID = uniqueActionID();
 	for (let i = 0; i < Math.floor(N / 2); i++) {
 		for (let j = i; j < N - i - 1; j++) {
-			const temp = gridList[gridPtr].at(i, j);
-			drawCell(i, j, gridList[gridPtr].at(j, N - i - 1), actionID);
-			drawCell(j, N - i - 1, gridList[gridPtr].at(N - i - 1, N - j - 1), actionID);
-			drawCell(N - i - 1, N - j - 1, gridList[gridPtr].at(N - j - 1, i), actionID);
+			const temp = grids.curr.at(i, j);
+			drawCell(i, j, grids.curr.at(j, N - i - 1), actionID);
+			drawCell(j, N - i - 1, grids.curr.at(N - i - 1, N - j - 1), actionID);
+			drawCell(N - i - 1, N - j - 1, grids.curr.at(N - j - 1, i), actionID);
 			drawCell(N - j - 1, i, temp, actionID);
 		}
 	}
@@ -655,7 +641,7 @@ const undo = () => {
 		}
 		actionPtr--;
 	}
-	//updateCurrentCanvas();
+	updateCurrentCanvas();
 };
 const redo = () => {
 	if (actionPtr < actionStack.length - 1) {
@@ -666,7 +652,7 @@ const redo = () => {
 			setBtnColor(i, j, newColor);
 		}
 	}
-	//updateCurrentCanvas();
+	updateCurrentCanvas();
 };
 
 const handleDrawMode = el => {
@@ -705,12 +691,12 @@ const handleDropdown = () => {
 };
 
 const downloadTxt = () => {
-	const href = `data:text/plain;charset=utf-8, ${encodeURIComponent(gridList[gridPtr].toString())}`;
+	const href = `data:text/plain;charset=utf-8, ${encodeURIComponent(grids.curr.toString())}`;
 	downloadHelper(sketchName, "txt", href);
 };
 const downloadIno = () => {
 	const fileName = sketchName.replace(/\s+/g, "-").toLowerCase().substring(0, 8);
-	const gridDataStr = gridList[gridPtr].toString().slice(1, -1);
+	const gridDataStr = grids.curr.toString().slice(1, -1);
 	const addFileContent = `#include <avr/pgmspace.h>\n#include <SPI.h>\n #include <SD.h>\nFile f;\nconst byte IMG[] PROGMEM = {${gridDataStr}};\nvoid setup() {\n\tSerial.begin(9600);\n\twhile (!Serial) { ; }\n\tif (!SD.begin(10)) { while (1); }\n\tif (SD.exists("${fileName}.txt")) { Serial.println("File already exists."); }\n\telse {\n\t\tf = SD.open("${fileName}.txt", FILE_WRITE);\n\t\tif (f) {\n\t\t\tfor (int i = 0; i < 768; i++) { f.write(pgm_read_byte(&IMG[i])); }\n\t\t\tf.close();\n\t\t}\n\t}\n}\nvoid loop() {}`;
 	const showFileContent = `#include <SPI.h>\n#include <SD.h>\n#include "FastLED.h"\n#define NUM_LEDS 256\n#define DATA_PIN 9\nCRGB leds[NUM_LEDS];\nFile f;\nString fileName;\nlong color;\nvoid setup() {\n\tFastLED.addLeds<NEOPIXEL,DATA_PIN>(leds, NUM_LEDS);\n\tFastLED.setBrightness(12);\n\tSerial.begin(9600);\n\twhile (!Serial) { ; }\n\tif (!SD.begin(10)) { while(1); }\n\tf = SD.open("${fileName}.txt");\n\tif (f) {\n\t\tfor (size_t i = 0; i < NUM_LEDS; i++) {\n\t\t\tcolor = 0;\n\t\t\tcolor += currFile.read();\n\t\t\tcolor <<= 8;\n\t\t\tcolor += currFile.read();\n\t\t\tcolor <<= 8;\n\t\t\tcolor += currFile.read();\n\t\t\tleds[i] = color;\n\t\t}\n\t\tf.close();\n\t}\n\tFastLED.show();\n}\nvoid loop() {}`;
 	
@@ -791,39 +777,43 @@ document.onmouseup = e => {
 
 
 
-//const MAX_FRAMES_SHOWN= 8;
+const MAX_FRAMES_SHOWN = 8;
+const FRAME_PIXEL_DILATION = 4;
 
-let gridList = [new Grid(N)];
-let gridPtr = 0;
+let grids = new GridArray(N);
+grids.addGrid();
 
-/*
-const createFrame = () => {
-	const frameContainer = document.createElement("div");
-	frameContainer.classList.add("frame-container");
 
-	const canvas = document.createElement("canvas");
-	canvas.width = 4 * N;
-	canvas.height = 4 * N;
-	canvas.id = `canvas-${gridPtr}`;
-	frameContainer.appendChild(canvas);
 
-	const idxDiv = document.createElement("div");
-	idxDiv.innerHTML = `${gridPtr + 1}`;
-	frameContainer.appendChild(idxDiv);
+for (let i = 0; i < MAX_RECENT_COLORS; i++) {
+	const frameCanvas = document.createElement("canvas");
+	frameCanvas.classList.add("frame-item");
+	frameCanvas.width = 4 * N;
+	frameCanvas.height = 4 * N;
+	frameCanvas.id = `frame-${i}`;
 
-	framesContainer.appendChild(frameContainer);
-};*/
+	const ctx = frameCanvas.getContext("2d");
+	const pixelWidth = N * FRAME_PIXEL_DILATION;
+	//const imgData = ctx.createImageData(pixelWidth, pixelWidth);
+	ctx.beginPath();
+	ctx.rect(0, 0, pixelWidth, pixelWidth);
+	ctx.fillStyle = "gray";
+	ctx.fill();
+	frames.appendChild(frameCanvas);
+}
 
-const drawGridToCanvas = (canvas, gridIdx, pixelDilation) => {
+
+
+const drawGridToCanvas = canvas => {
 	const ctx = canvas.getContext("2d");
-	const pixelWidth = pixelDilation * N;
+	const pixelWidth = N * FRAME_PIXEL_DILATION;
 	const imgData = ctx.createImageData(pixelWidth, pixelWidth);
 
 	for (let i = 0; i < N; i++) {
 		for (let j = 0; j < N; j++) {
-			const [r, g, b] = gridList[gridIdx].at(i, j).rgb;
-			for (let byteI = i * pixelDilation; byteI < (i + 1) * pixelDilation; byteI++) {
-				for (let byteJ = j * (pixelDilation * 4); byteJ < (j + 1) * (pixelDilation * 4); byteJ += 4) {
+			const [r, g, b] = grids.curr.at(i, j).rgb;
+			for (let byteI = i * FRAME_PIXEL_DILATION; byteI < (i + 1) * FRAME_PIXEL_DILATION; byteI++) {
+				for (let byteJ = j * (FRAME_PIXEL_DILATION * 4); byteJ < (j + 1) * (FRAME_PIXEL_DILATION * 4); byteJ += 4) {
 					const idx = byteI * pixelWidth * 4 + byteJ;
 					imgData.data[idx] = r;
 					imgData.data[idx + 1] = g;
@@ -835,14 +825,15 @@ const drawGridToCanvas = (canvas, gridIdx, pixelDilation) => {
 	}
 	ctx.putImageData(imgData, 0, 0);
 };
-/*
+
+
+
 const updateCurrentCanvas = () => {
-	const canvas = framesContainer.querySelector(`#canvas-${gridPtr}`);
-	drawGridToCanvas(canvas, gridPtr, 4);
+	const canvas = frames.querySelector("#frame-0");
+	drawGridToCanvas(canvas, 4);
 };
 
-createFrame();
-updateCurrentCanvas();*/
+updateCurrentCanvas();
 /*
 
 for (let i = 0; i < MAX_FRAMES_SHOWN; i++) {
@@ -855,10 +846,29 @@ for (let i = 0; i < MAX_FRAMES_SHOWN; i++) {
 	recentColorBtn.onclick = handleRecentColor;
 
 
-	framesContainer.appendChild(frame);
-}
+	frames.appendChild(frame);
+}*/
 
-const GridList = class {
 
+/*
+
+const handleRecentColor = e => {
+	const idx = +e.target.id.slice(-1);
+	if (idx < recentColors.length) setDrawColor(recentColors[idx]);
+};
+const addRecentColor = c => {
+	if (
+		!PALETTE.some(otherColor => c.isEqual(otherColor)) &&
+		!recentColors.some(otherColor => c.isEqual(otherColor))
+	) {
+		const len = recentColors.unshift(c);
+		if (len > MAX_RECENT_COLORS) recentColors.splice(MAX_RECENT_COLORS);
+
+		for (let i = 0; i < len; i++) {
+			const recentColorBtn = recentColorGrid.querySelector(`#recent-colors-${i}`);
+			recentColorBtn.title = recentColors[i].title;
+			recentColorBtn.style.backgroundColor = recentColors[i].hex;
+		}
+	}
 };
 */

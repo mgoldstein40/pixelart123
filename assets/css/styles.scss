@@ -232,30 +232,56 @@ header {
     background-color: #FFF0B0;
     height: auto;
     width: auto;
-    //display: flex;
-    //flex-direction: column;
-    //gap: 20px;
 
-    #grid-container {
-        position: relative;
-        top: var(--grid-cell-size);
-        left: var(--grid-cell-size);
+    display: flex;
+    flex-direction: column;
 
-        button {
-            width: var(--grid-cell-size);
-            height: var(--grid-cell-size);
-        }
+    #frames-container {
+        height: 120px;
+        background-color: skyblue;
+        
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
 
-        .grid-row {
+        #frames {
+            position: relative;
+            left: 20px;
+
+            border: 5px solid silver;
+            width: fit-content;
+
             display: flex;
+            align-items: center;
 
-            .grid-btn {
-                border: 0.5px solid lightgray;
+            .frame-item {
+                border: 1px solid silver;
+
+                &.selected {
+                    border: 2px solid gold;
+                }
             }
         }
     }
 
-   /*#frames-container {
-        
-    }*/
+    #sketch-container {
+        #sketch {
+            position: relative;
+            top: var(--grid-cell-size);
+            left: var(--grid-cell-size);
+    
+            button {
+                width: var(--grid-cell-size);
+                height: var(--grid-cell-size);
+            }
+    
+            .grid-row {
+                display: flex;
+    
+                .grid-btn {
+                    border: 0.5px solid lightgray;
+                }
+            }
+        }
+    }
 }
