@@ -23,11 +23,12 @@ body {
     overflow: hidden;
 
     display: grid;
-    grid-template-rows: 75px calc(100% - 75px);
+    grid-template-rows: 75px 125px auto;//calc(100% - 75px);
     grid-template-columns: 235px auto;
     grid-template-areas:
         "header header"
-        "sidebar main";
+        "sidebar frames"
+        "sidebar sketch";
 }
 
 header {
@@ -226,61 +227,57 @@ header {
     height: var(--sidebar-cell-size);
 }
 
-#main {
-    grid-area: main;
-    margin: 0;
+#frames-section {
+    grid-area: frames;
+    background-color: skyblue;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    #frames {
+        position: relative;
+        left: 20px;
+
+        border: 5px solid silver;
+        width: fit-content;
+
+        display: flex;
+        align-items: center;
+
+        .frame-item {
+            border: 1px solid silver;
+
+            &.selected {
+                border: 2px solid gold;
+            }
+        }
+    }
+}
+
+#sketch-section {
+    grid-area: sketch;
+
     background-color: #FFF0B0;
     height: auto;
     width: auto;
 
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-    #frames-container {
-        height: 120px;
-        background-color: skyblue;
-        
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+    #sketch {
 
-        #frames {
-            position: relative;
-            left: 20px;
-
-            border: 5px solid silver;
-            width: fit-content;
-
-            display: flex;
-            align-items: center;
-
-            .frame-item {
-                border: 1px solid silver;
-
-                &.selected {
-                    border: 2px solid gold;
-                }
-            }
+        button {
+            width: var(--grid-cell-size);
+            height: var(--grid-cell-size);
         }
-    }
 
-    #sketch-container {
-        #sketch {
-            position: relative;
-            top: var(--grid-cell-size);
-            left: var(--grid-cell-size);
-    
-            button {
-                width: var(--grid-cell-size);
-                height: var(--grid-cell-size);
-            }
-    
-            .grid-row {
-                display: flex;
-    
-                .grid-btn {
-                    border: 0.5px solid lightgray;
-                }
+        .grid-row {
+            display: flex;
+
+            .grid-btn {
+                border: 0.5px solid lightgray;
             }
         }
     }

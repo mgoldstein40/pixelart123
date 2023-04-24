@@ -92,8 +92,26 @@ const Grid = class {
 		return this.#arr.every(c => c.isEqual(BLACK));
 	}
 
-	draw() {
-		// REDRAW GRID TO MATCH CURRENT DATA
+	drawFrame(canvas) {
+		const ctx = canvas.getContext("2d");
+		const pixelWidth = N * FRAME_PIXEL_DILATION;
+		const imgData = ctx.createImageData(pixelWidth, pixelWidth);
+	
+		for (let i = 0; i < N; i++) {
+			for (let j = 0; j < N; j++) {
+				const [r, g, b] = grids.curr.at(i, j).rgb;
+				for (let byteI = i * FRAME_PIXEL_DILATION; byteI < (i + 1) * FRAME_PIXEL_DILATION; byteI++) {
+					for (let byteJ = j * (FRAME_PIXEL_DILATION * 4); byteJ < (j + 1) * (FRAME_PIXEL_DILATION * 4); byteJ += 4) {
+						const idx = byteI * pixelWidth * 4 + byteJ;
+						imgData.data[idx] = r;
+						imgData.data[idx + 1] = g;
+						imgData.data[idx + 2] = b;
+						imgData.data[idx + 3] = 255;
+					}
+				}
+			}
+		}
+		ctx.putImageData(imgData, 0, 0);
 	}
 };
 
@@ -152,11 +170,14 @@ const GridArray = class {
 		if (idx >= 0 && idx < this.length) this.#ptr = idx;
 	}
 
-	draw() {
+	drawFrames() {
+		for (let idx = 0; idx < MAX_FRAMES_SHOWN; idx++) {
+
+		}
 		// DRAW THE CURRENT VIEW OF THIS GRID ARRAY (USING OFFSET, PTR, ETC.)
 	}
 
-	drawGrid(idx) {
+	drawFrame(idx) {
 		// DRAW ONLY THE RELEVANT GRID
 	}
 };
@@ -200,11 +221,11 @@ const drawModeSection = sidebar.querySelector("#draw-mode");
 const drawColorSection = sidebar.querySelector("#draw-color");
 const filesSection = sidebar.querySelector("#files");
 
-const main = document.querySelector("#main");
-const sketchContainer = main.querySelector("#sketch-container");
-const sketch = sketchContainer.querySelector("#sketch");
-const framesContainer = main.querySelector("#frames-container");
-const frames = framesContainer.querySelector("#frames");
+const framesSection = document.querySelector("#frames-section");
+const frames = framesSection.querySelector("#frames");
+
+const sketchSection = document.querySelector("#sketch-section");
+const sketch = sketchSection.querySelector("#sketch");
 
 
 /* FILE HELPER FUNCTIONS */
@@ -767,8 +788,7 @@ const handleKeyDown = e => {
 };
 
 
-main.onkeydown = handleKeyDown;
-sidebar.onkeydown = handleKeyDown;
+document.onkeydown = handleKeyDown;
 document.onmouseup = e => {
 	pressedCell = null;
 
