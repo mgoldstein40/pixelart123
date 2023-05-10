@@ -5,6 +5,8 @@
 // TODO: general animation stuff
 // TODO: Fix color picker height
 
+// TODO: Custom palettes
+
 // TODO: Change drawGridToCanvas so that it only redraws affected cells (put in drawcell & undo, redo)
 
 // TODO: save as image
@@ -14,12 +16,21 @@
 
 // TODO: color input size
 
+// TODO: edit frame info instead of starting from scratch
+
+
+// obj instanceof Class
+
+
+
+// TODO: add all named colors to static dictionary, then use the names of some colors to create palette
+
 const Color = class {
 	#rgb;
 	#hex;
 	#title;
 
-    static colorNames = {"Black": "#000000", "Gray": "#808080", "Silver": "#c0c0c0", "White": "#ffffff", "Fuchsia": "#ff00ff", "Deep Pink": "#ff1493", "Maroon": "#800000", "Fire Brick": "#b22222", "Red": "#ff0000", "Coral": "#ff4500", "Orange": "#ff8000", "Gold": "#ffd700", "Yellow": "#ffff00", "Chartreuse": "#80ff00", "Lime": "#00ff00", "Lime Green": "#32cd32", "Olive Drab": "#6b8e23", "Green": "#008000", "Teal": "#008080", "Deep Sky Blue": "#00bfff", "Aquamarine": "#7fffd4", "Cyan": "#00ffff", "Blue": "#0000ff", "Navy": "#000080", "Indigo": "#4b0082", "Dark Violet": "#9400d3", "Violet": "#ee82ee", "Pink": "#ffc0cb", "Tan": "#d2b48c", "Khaki": "#f0e68c", "Sienna": "#a0522d", "Saddle Brown": "#8b4513"};
+    static namedColors = {"Black": "#000000", "Gray": "#808080", "Silver": "#c0c0c0", "White": "#ffffff", "Fuchsia": "#ff00ff", "Deep Pink": "#ff1493", "Maroon": "#800000", "Fire Brick": "#b22222", "Red": "#ff0000", "Coral": "#ff4500", "Orange": "#ff8000", "Gold": "#ffd700", "Yellow": "#ffff00", "Chartreuse": "#80ff00", "Lime": "#00ff00", "Lime Green": "#32cd32", "Olive Drab": "#6b8e23", "Green": "#008000", "Teal": "#008080", "Deep Sky Blue": "#00bfff", "Aquamarine": "#7fffd4", "Cyan": "#00ffff", "Blue": "#0000ff", "Navy": "#000080", "Indigo": "#4b0082", "Dark Violet": "#9400d3", "Violet": "#ee82ee", "Pink": "#ffc0cb", "Tan": "#d2b48c", "Khaki": "#f0e68c", "Sienna": "#a0522d", "Saddle Brown": "#8b4513"};
 
     
 	constructor(colorData) {
@@ -55,13 +66,16 @@ const Color = class {
     }
 };
 
-PALETTE = Object.values(Color.colorNames).map(hex => new Color(hex));
+const PALETTE = [
+
+];
+// PALETTE = Object.values(Color.colorNames).map(hex => new Color(hex));
 const BLACK = new Color("#000000");
 const SILVER = new Color("#c0c0c0");
 const WHITE = new Color("#ffffff");
 
 
-const Grid = class {
+const Frame = class {
 	#size;
 	#arr;
 
@@ -75,12 +89,15 @@ const Grid = class {
 	at(i, j) {
 		return this.#arr[i * this.#size + j];
 	}
+
 	put(i, j, c) {
 		this.#arr[i * this.#size + j] = c;
 	}
+
 	toString() {
 		return JSON.stringify(this.#arr.map(c => c.rgb).flat());
 	}
+
 	fromString(s) {
 		const newArr = JSON.parse(s);
 		for (let idx = 0; idx < this.#size ** 2; idx++) {
@@ -88,32 +105,284 @@ const Grid = class {
 			this.#arr[idx] = new Color([newArr[newArrIdx], newArr[newArrIdx + 1], newArr[newArrIdx + 2]]);
 		}
 	}
+
 	isEmpty() {
 		return this.#arr.every(c => c.isEqual(BLACK));
 	}
+};
 
-	drawFrame(canvas) {
-		const ctx = canvas.getContext("2d");
-		const pixelWidth = N * FRAME_PIXEL_DILATION;
-		const imgData = ctx.createImageData(pixelWidth, pixelWidth);
+const FrameList = class {
+	#size;
+	#lst;
+	#ptr;
+	#delays;
+	#clipboard;
+
+	#gridDiv;
+	#framesDiv;
+
+	constructor(size, gridDiv, framesDiv) {
+		this.#size = size;
+		this.#lst = [new Frame(size)];
+		this.#ptr = 0;
+		this.#delays = [1.0];
+		this.#clipboard = null;
+
+		this.#gridDiv = gridDiv;
+		this.#framesDiv = framesDiv;
+	}
+
+	get currFrame() {
+		return this.#lst[this.#ptr];
+	}
 	
-		for (let i = 0; i < N; i++) {
-			for (let j = 0; j < N; j++) {
-				const [r, g, b] = grids.curr.at(i, j).rgb;
-				for (let byteI = i * FRAME_PIXEL_DILATION; byteI < (i + 1) * FRAME_PIXEL_DILATION; byteI++) {
-					for (let byteJ = j * (FRAME_PIXEL_DILATION * 4); byteJ < (j + 1) * (FRAME_PIXEL_DILATION * 4); byteJ += 4) {
-						const idx = byteI * pixelWidth * 4 + byteJ;
-						imgData.data[idx] = r;
-						imgData.data[idx + 1] = g;
-						imgData.data[idx + 2] = b;
-						imgData.data[idx + 3] = 255;
-					}
+	get length() {
+		return this.#lst.length;
+	}
+
+	editDelay(idx, newDelay) {
+		if (idx >= 0 && idx < this.length) {
+			this.#delays[idx] = newDelay;
+		}
+	}
+
+	addFrame(idx) {
+		if (idx >= 0 && idx <= this.length) {
+			this.#lst.splice(idx, 0, new Frame(this.#size));
+			this.#delays.splice(idx, 0, 1.0);
+			this.#ptr = idx;
+		}
+	}
+
+	removeFrame(idx) {
+		if (idx >= 0 && idx < this.length) {
+			if (idx === this.length - 1) {
+				this.#ptr--;
+			}
+			this.#lst.splice(idx, 1);
+			this.#delays.splice(idx, 1);
+		}
+	}
+
+	selectFrame(idx) {
+		if (idx >= 0 && idx < this.length) {
+			this.#ptr = idx;
+		}
+	}
+
+	moveFrame(oldIdx, newIdx) {
+		if (oldIdx >= 0 && oldIdx < this.length && oldIdx != newIdx && newIdx >= 0 && newIdx <= this.length) {
+
+		}
+	}
+
+	prevFrame() {
+		this.#ptr--;
+	}
+
+	nextFrame() {
+		this.#ptr++;
+	}
+
+	copyFrame() {
+		this.#clipboard = this.currFrame.toString();
+	}
+
+	pasteFrame() {
+		if (clipboard != null) {
+			this.currFrame.fromString(this.#clipboard);
+		}
+	}
+
+	drawPixel(i, j, color) {
+		this.currFrame.put(i, j, color);
+	}
+};
+
+const Action = class {
+	static #currID = 0;
+
+	#id;
+
+	constructor(id = null) {
+		this.#id = id;
+	}
+
+	get id() {
+		return this.#id;
+	}
+
+	static newId() {
+		return Action.#currID++;
+	}
+};
+
+const DrawAction = class extends Action {
+	#i;
+	#j;
+	#oldColor;
+	#newColor;
+
+	constructor(i, j, oldColor, newColor, id = null) {
+		super(id);
+
+		this.#i = i;
+		this.#j = j;
+		this.#oldColor = oldColor;
+		this.#newColor = newColor;
+	}
+
+	forward(frameList) {
+		frameList.currFrame.put(this.#i, this.#j, this.#newColor);
+	}
+
+	backward(frameList) {
+		frameList.currFrame.put(this.#i, this.#j, this.#oldColor);
+	}
+};
+
+const FrameAction = class extends Action {
+	#type;
+	#newIdx;
+	#oldIdx;
+	#gridString;
+
+	constructor(frameActionType, newIdx, oldIdx = null, gridString = null, id = null) {
+		super(id);
+
+		this.#type = frameActionType;
+		this.#newIdx = newIdx;
+		this.#oldIdx = oldIdx;
+		this.#gridString = gridString;
+	}
+
+	forward(frameList) {
+		if (this.#type === "add") {
+			frameList.addFrame(this.#newIdx);
+		} else if (this.#type === "remove") {
+			frameList.removeFrame(this.#oldIdx);
+		} else if (this.#type === "select") {
+			frameList.selectFrame(this.#newIdx);
+		} else if (this.#type === "move") {
+
+		}
+	}
+
+	backward(frameList) {
+		if (this.#type === "add") {
+			frameList.removeFrame(this.#newIdx);
+			frameList.selectFrame(this.#oldIdx);
+		} else if (this.#type === "remove") {
+			frameList.addFrame(this.#oldIdx);
+			frameList.currFrame.fromString(this.#gridString);
+		} else if (this.#type === "select") {
+			frameList.selectFrame(this.#oldIdx);
+		} else if (this.#type === "move") {
+
+		}
+	}
+};
+
+const RecentColorList = class {
+	#lst;
+
+	constructor() {
+		
+	}
+};
+
+const ActionList = class {
+	static #MAX_SIZE = 50;
+
+	#actionList;
+	#ptr;
+
+	#frameList;
+
+	constructor(frameList) {
+		this.#actionList = [];
+		this.#ptr = -1;
+
+		this.#frameList = frameList;
+	}
+
+	get length() {
+		return this.#actionList.length;
+	}
+
+	get cuurAction() {
+		return this.#actionList[this.#ptr] ?? null;
+	}
+
+	do(action) {
+		// If stack is full, forget bottom of stack.
+		if (this.length === ActionList.#MAX_SIZE) {
+			this.#actionList.shift();
+			this.#ptr -= 1;
+		}
+
+		// Add action to an ongoing action at the top of the stack.
+		if (this.curr?.at(-1)?.id ?? -1 === action.id) {
+			this.curr?.push(action);
+		} else {
+			this.#ptr++;
+
+			if (this.#ptr === this.length) {
+				// If at top of stack, add action.
+				this.#actionList.push([action]);
+			} else {
+				// If in the middle of stack, add action and forget above the inserted action.
+				this.#actionList[this.#ptr] = [action];
+				this.#actionList.splice(this.#ptr + 1);
+			}
+		}
+
+		action.forward(this.#frameList);
+	}
+
+	undo() {
+		if (this.#ptr > -1) {
+			for (let k = this.currAction.length - 1; k > -1; k--) {
+				this.currAction[k].backward(this.#frameList);
+			}
+			this.#ptr--;
+		}
+	}
+
+	redo() {
+		if (this.#ptr < this.length - 1) {
+			this.#ptr++;
+			for (let k = 0; k < this.curr.length; k++) {
+				this.currAction[k].forward(this.#frameList);
+			}
+		}
+	}
+};
+
+
+/*
+const frameToGrid = canvas => {
+	const ctx = canvas.getContext("2d");
+	const pixelWidth = N * FRAME_PIXEL_DILATION;
+	const imgData = ctx.createImageData(pixelWidth, pixelWidth);
+
+	for (let i = 0; i < N; i++) {
+		for (let j = 0; j < N; j++) {
+			const [r, g, b] = grids.curr.at(i, j).rgb;
+			for (let byteI = i * FRAME_PIXEL_DILATION; byteI < (i + 1) * FRAME_PIXEL_DILATION; byteI++) {
+				for (let byteJ = j * (FRAME_PIXEL_DILATION * 4); byteJ < (j + 1) * (FRAME_PIXEL_DILATION * 4); byteJ += 4) {
+					const idx = byteI * pixelWidth * 4 + byteJ;
+					imgData.data[idx] = r;
+					imgData.data[idx + 1] = g;
+					imgData.data[idx + 2] = b;
+					imgData.data[idx + 3] = 255;
 				}
 			}
 		}
-		ctx.putImageData(imgData, 0, 0);
 	}
+	ctx.putImageData(imgData, 0, 0);
 };
+*/
 
 
 /* CONSTANTS DECLARATIONS */
@@ -155,7 +424,7 @@ const drawColorSection = sidebar.querySelector("#draw-color");
 const filesSection = sidebar.querySelector("#files");
 
 const framesSection = document.querySelector("#frames-section");
-const frames = framesSection.querySelector("#frames");
+const framesDiv = framesSection.querySelector("#frames");
 
 const sketchSection = document.querySelector("#sketch-section");
 const sketch = sketchSection.querySelector("#sketch");
@@ -235,7 +504,7 @@ const drawCell = (i, j, newColor, actionID = null) => {
 		}
 
 		if (
-			(drawMode === "p" && pressedCell != null) ||
+			(drawMode === 0 && pressedCell != null) ||
 			(actionID !== null && (actionStack[actionPtr]?.at(-1)[4] ?? -1) === actionID)
 		) {
 			// Add action to an ongoing action at the top of the array.
@@ -720,7 +989,6 @@ const handleKeyDown = e => {
 	}
 };
 
-
 document.onkeydown = handleKeyDown;
 document.onmouseup = e => {
 	pressedCell = null;
@@ -739,15 +1007,9 @@ for (let i = 0; i < MAX_FRAMES_SHOWN; i++) {
 	frameCanvas.width = 4 * N;
 	frameCanvas.height = 4 * N;
 	frameCanvas.id = `frame-${i}`;
-
-	/*const ctx = frameCanvas.getContext("2d");
-	const pixelWidth = N * FRAME_PIXEL_DILATION;
-	ctx.beginPath();
-	ctx.rect(0, 0, pixelWidth, pixelWidth);
-	ctx.fillStyle = "gray";
-	ctx.fill();*/
-	frames.appendChild(frameCanvas);
+	framesDiv.appendChild(frameCanvas);
 }
+
 
 const GridArray = class {
 	#size;
@@ -762,9 +1024,9 @@ const GridArray = class {
 
 	constructor(size) {
 		this.#size = size;
-		this.#ptr = -1;
+		this.#ptr = 1;
 		this.#offset = 0;
-		this.#arr = [];
+		this.#arr = [new Grid(size), new Grid(size)];
 		this.#times = [];
 		this.#clipboard = null;
 	}
@@ -778,41 +1040,39 @@ const GridArray = class {
 	get length() {
 		return this.#arr.length;
 	}
-	get currCanvas() {
-		return frames.querySelector(`#frame-${this.#ptr - this.#offset}`);
-	}
 
 	addFrame() {
-		this.#arr.splice(this.#ptr, 0, new Grid(this.#size));
-		this.#ptr++;
 	}
 	removeFrame() {
-		this.#arr = this.#arr.splice(this.#ptr, 1);
-		if (this.#ptr === this.length) this.#ptr--;
-		if (this.length <= 0) this.#ptr = -1;
 	}
 	copyFrame(idx) {
-		if (idx >= 0 && idx < this.length) this.#clipboard = this.#arr[idx].toString();
 	}
 	pasteFrame(idx) {
-		if (idx >= 0 && idx < this.length) this.#arr[idx].fromString(this.#clipboard);
 	}
 	prevFrame() {
-		if (this.#ptr > 0) this.#ptr--;
 	}
 	nextFrame() {
-		if (this.#ptr < this.length - 1) this.#ptr++;
 	}
-	select(idx) {
-		if (idx >= 0 && idx < this.length) this.#ptr = idx;
+	selectFrame(idx) {
+		if (idx >= 0 && idx < this.length) {
+			this.#ptr = idx;
+
+			this.drawFrames();
+			const actionID = uniqueActionID();
+			for (let i = 0; i < N; i++) {
+				for (let j = 0; j < N; j++) {
+					drawCell(i, j, this.curr.at(i, j), actionID);
+				}
+			}
+		}
 	}
 
 	drawFrames() {
 		for (let canvasIdx = 0; canvasIdx < MAX_FRAMES_SHOWN; canvasIdx++) {
-			const canvas = frames.querySelector(`#frame-${canvasIdx}`);
+			const canvas = framesDiv.querySelector(`#frame-${canvasIdx}`);
 			const idx = canvasIdx + this.#offset;
 			if (idx < this.length) {
-				this.#arr[idx].drawFrame(canvas);
+				this.#arr[idx].draw(canvas);
 				canvas.classList.remove("curr");
 				if (idx === this.#ptr) {
 					canvas.classList.add("curr");
@@ -824,7 +1084,8 @@ const GridArray = class {
 	}
 
 	drawCurr() {
-		this.curr.drawFrame(this.currCanvas);
+		const canvas = framesDiv.querySelector(`#frame-${this.ptr}`);
+		this.curr.draw(canvas);
 	}
 
 	drawNullFrame(canvas) {
@@ -860,36 +1121,16 @@ const drawGridToCanvas = canvas => {
 	ctx.putImageData(imgData, 0, 0);
 };
 
-
-const addFrame = () => {
-	grids.addFrame();
-	grids.drawFrames();
-};
-const removeFrame = () => {
-	grids.removeFrame();
-	grids.drawFrames();
-};
-const copyFrame = () => {
-	grids.copyFrame();
-};
-const pasteFrame = () => {
-};
-const prevFrame = () => {
-
-};
-const nextFrame = () => {
-
-};
-
-
-
-
-
-
 let grids = new GridArray(N);
-addFrame();
 
+for (let i = 0; i < MAX_FRAMES_SHOWN; i++) {
+	const frameCanvas = framesDiv.querySelector(`#frame-${i}`);
+	frameCanvas.onclick = e => {
+		grids.selectFrame(i);
+	};
+}
 
+grids.drawFrames();
 
 
 
